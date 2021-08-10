@@ -1,4 +1,3 @@
-
 const userTime = document.querySelector('.time');
 const userDate = document.querySelector('.date');
 const userGreeting = document.querySelector('.greeting');
@@ -7,6 +6,10 @@ const documentBody = document.body;
 let randomNum;
 const slideNext = document.querySelector('.slide-next');
 const slidePrev = document.querySelector('.slide-prev');
+const weatherIcon = document.querySelector('.weather-icon');
+const temperature = document.querySelector('.temperature');
+const weatherDescription = document.querySelector('.weather-description');
+const weatherInput = document.querySelector('.city');
 
 function showTime() {
     const date = new Date();
@@ -73,10 +76,22 @@ function getLocalStorage() {
         userName.value = '';
     }
 }
+async function getWeather() {  
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${weatherInput.value}&lang=ru&appid=898c5bf5baf4fa9541b2e85c88d43cab&units=metric`;
+    const res = await fetch(url);
+    const data = await res.json(); 
+    console.log(data.weather[0].id, data.weather[0].description, data.main.temp);
+    weatherIcon.className = 'weather-icon owf';
+    weatherIcon.classList.add(`owf-${data.weather[0].id}`);
+    temperature.textContent = `${data.main.temp}°C`;
+    weatherDescription.textContent = data.weather[0].description;
+}
+getWeather()
 
 setBg();
 window.addEventListener('beforeunload', setLocalStorage);
 window.addEventListener('load', getLocalStorage);
 slideNext.addEventListener('click', getSlideNext);
 slidePrev.addEventListener('click', getSlidePrev);
+weatherInput.addEventListener('change', getWeather);
 showTime();
